@@ -22,12 +22,10 @@ class Login extends Component {
                 console.log(this.state);   
             })
         .catch( error => {
-            if (!email.includes("@")) {
+            if (error.message === "The email address is badly formatted.") {
                 this.setState({error: "Email mal formateado"}); 
             }
-            else if(email.includes("@")) {
-                this.setState({error: ""});
-            }
+            
             if(pass.length < 6) {
                 this.setState({error2: "La contraseña debe tener al menos 6 caracteres"});
             }

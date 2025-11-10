@@ -19,17 +19,26 @@ class Register extends Component {
         auth.createUserWithEmailAndPassword(email, pass)
         .then( response => {this.setState({registered: true});
             console.log("Usuario registrado correctamente", response);
-            auth.signOut()
-            this.props.navigation.navigate("Login");
+            db.collection("users")
+            .add({
+                email: this.state.email,
+                username: this.state.username,
+                createdAt: Date.now(), 
+            })
+            .then( () => {
+                    auth.signOut()
+                    this.props.navigation.navigate("Login")
+                })
+        
         })
         .catch( error => {
             console.log(error);
             
-            if (!email.includes("@")) {
+            if (error.message === "The email address is badly formatted.") {
                 this.setState({error: "Email mal formateado"}); 
             }
-            else if(email.includes("@")) {
-                this.setState({error: ""});
+            else if (error.message === "The email address is already in use by another account.") {
+                this.setState({error: "Email ya registrado"});
             }
             if(pass.length < 6) {
                 this.setState({error2: "La contraseña debe tener al menos 6 caracteres"});
@@ -41,12 +50,8 @@ class Register extends Component {
         console.log(this.state);
     }
 
+
     componentDidMount() {
-    db.collection("users").add({
-        email: this.state.email,
-        username: this.state.username,
-        createdAt: Date.now(), 
-    })
     auth.onAuthStateChanged(user => {
         if (user){
             this.props.navigation.navigate("HomeMenu")
@@ -67,6 +72,9 @@ class Register extends Component {
 
                 <Pressable onPress={() => this.register(this.state.email, this.state.password)}>
                     <Text style={styles.text1}>Registrate</Text>
+                </Pressable>
+                <Pressable onPress={() => this.props.navigation.navigate("Login")}>
+                    <Text style={styles.text1}>Ya tenés cuenta? Inicia Sesion</Text>
                 </Pressable>
 
                 <View style={styles.datos}>

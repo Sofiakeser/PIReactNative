@@ -1,7 +1,8 @@
 import { createBottomTabNavigator } from "@react-navigation/bottom-tabs";
+import { View, Text, StyleSheet, Pressable} from "react-native";
 import Home from "../screens/Home";
 import Perfil from "../screens/Perfil";
-import NuevoPost from "../screens/nuevoPost";
+import NuevoPost from "../screens/NuevoPost";
 const Tab = createBottomTabNavigator();
 
 function HomeMenu() {

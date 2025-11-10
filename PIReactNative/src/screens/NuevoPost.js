@@ -8,10 +8,32 @@ class NuevoPost extends Component {
         this.state = {
             mensaje: '',
             error: '',
-            likes: [],
+            username: '',
         }
     }
-     
+
+    obtenerUsername() {
+        const user = auth.currentUser;
+        if (user) {
+            db.collection("users").where("email", "==", user.email)
+            .onSnapshot((docs) => {
+              let usuarios = [];
+    
+              docs.forEach((doc) => {
+                let data = doc.data();
+    
+                usuarios.push({
+                  id: doc.id,
+                  username: data.username,
+                });
+              });
+    
+              this.setState({
+                username: usuarios[0].username,
+              });
+            });
+    }}
+
     subirPost() {
         const user = auth.currentUser;
             if (!user) {
@@ -36,7 +58,7 @@ class NuevoPost extends Component {
         return (
             <View style={styles.container}>
                 <Text style={styles.text}>Nuevo Post</Text>
-        
+
                 <TextInput
                     keyboardType="default"
                     placeholder="Mensaje"
@@ -44,11 +66,11 @@ class NuevoPost extends Component {
                     value={this.state.mensaje}
                     style={styles.text2}
                 />
-        
+
                 {this.state.error ? (
                 <Text style={styles.datos2}>{this.state.error}</Text>
                 ) : null}
-        
+
                 <Pressable onPress={() => this.subirPost()}>
                 <Text style={styles.text1}>Postear</Text>
                 </Pressable>
@@ -69,38 +91,38 @@ const styles = StyleSheet.create({
         fontSize: 20,
         textAlign: 'left',
         marginBottom: 10,
-    },    
+    },
     text1:{
-        backgroundColor: 'lightgreen', 
-        paddingHorizontal: 10,      
-        paddingVertical: 6,         
-        borderRadius: 4,            
-        borderWidth: 1,             
-        borderStyle: 'solid',       
-        borderColor: 'lightgreen',     
-        alignItems: 'center',  
-        textAlign: 'center',     
+        backgroundColor: 'lightgreen',
+        paddingHorizontal: 10,
+        paddingVertical: 6,
+        borderRadius: 4,
+        borderWidth: 1,
+        borderStyle: 'solid',
+        borderColor: 'lightgreen',
+        alignItems: 'center',
+        textAlign: 'center',
         marginTop: 10,
         width: 250,
     },
     text2:{
-        paddingVertical: 15,      
-        paddingHorizontal: 10,    
-        borderWidth: 1,           
-        borderColor: '#ccc',      
-        borderStyle: 'solid',     
-        borderRadius: 6,          
+        paddingVertical: 15,
+        paddingHorizontal: 10,
+        borderWidth: 1,
+        borderColor: '#ccc',
+        borderStyle: 'solid',
+        borderRadius: 6,
         marginVertical: 10,
         width: 250,
     },
     datos:{
-        backgroundColor: '#ecebebff', 
-        paddingHorizontal: 10,      
-        paddingVertical: 6,         
-        borderRadius: 4,            
-        borderWidth: 1,             
-        borderStyle: 'solid',       
-        borderColor: '#ecebebff',         
+        backgroundColor: '#ecebebff',
+        paddingHorizontal: 10,
+        paddingVertical: 6,
+        borderRadius: 4,
+        borderWidth: 1,
+        borderStyle: 'solid',
+        borderColor: '#ecebebff',
         marginTop: 10,
     },
     datos1:{
