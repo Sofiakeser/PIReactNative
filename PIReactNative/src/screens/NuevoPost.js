@@ -1,4 +1,4 @@
-import { View, Text, StyleSheet, TextInput, Pressable} from "react-native";
+import { View, Text, StyleSheet, TextInput, Pressable } from "react-native";
 import { Component } from "react";
 import { db, auth } from "../firebase/config";
 
@@ -16,44 +16,48 @@ class NuevoPost extends Component {
         const user = auth.currentUser;
         if (user) {
             db.collection("users").where("email", "==", user.email)
-            .onSnapshot((docs) => {
-              let usuarios = [];
-    
-              docs.forEach((doc) => {
-                let data = doc.data();
-    
-                usuarios.push({
-                  id: doc.id,
-                  username: data.username,
+                .onSnapshot((docs) => {
+                    let usuarios = [];
+
+                    docs.forEach((doc) => {
+                        let data = doc.data();
+
+                        usuarios.push({
+                            id: doc.id,
+                            username: data.username,
+                        });
+                    });
+
+                    this.setState({
+                        username: usuarios[0].username,
+                    });
                 });
-              });
-    
-              this.setState({
-                username: usuarios[0].username,
-              });
-            });
-    }}
+        }
+    }
 
     subirPost() {
         const user = auth.currentUser;
-            if (!user) {
-                this.setState({ error: "Tenés que estar logueado para postear" });
-            }
-            else{
-                db.collection("posts").add({
-                    mensaje: this.state.mensaje,
-                    email: auth.currentUser.email,
-                    likes: [],
-                    comentarios: [],
-                    createdAt: Date.now(),
+        if (!user) {
+            this.setState({ error: "Tenés que estar logueado para postear" });
+        }
+        else {
+            db.collection("posts").add({
+                mensaje: this.state.mensaje,
+                email: auth.currentUser.email,
+                likes: [],
+                comentarios: [],
+                createdAt: Date.now(),
+            })
+                .then(() => {
+                    this.setState({
+                        mensaje: '',
+                        error: ''
+                    });
+                    this.props.navigation.navigate('NavComments', { screen: 'Home' });
                 })
-                .then( res => this.setState({
-                    mensaje: '', 
-                    error: ''
-                }) )
-                .catch( error => this.setState({error: 'Error al subir el post'}) )
-                }
-            }
+                .catch (error => this.setState({ error: 'Error al subir el post' }) )
+        }
+    }
 
     render() {
         return (
@@ -69,13 +73,13 @@ class NuevoPost extends Component {
                 />
 
                 {this.state.error ? (
-                <Text style={styles.datos2}>{this.state.error}</Text>
+                    <Text style={styles.datos2}>{this.state.error}</Text>
                 ) : null}
 
                 <Pressable onPress={() => this.subirPost()}>
-                <Text style={styles.text1}>Postear</Text>
+                    <Text style={styles.text1}>Postear</Text>
                 </Pressable>
-          </View>
+            </View>
         );
     }
 }
@@ -87,13 +91,13 @@ const styles = StyleSheet.create({
         marginTop: 20,
         alignItems: 'center',
     },
-    text:{
+    text: {
         fontWeight: 'bold',
         fontSize: 20,
         textAlign: 'left',
         marginBottom: 10,
     },
-    text1:{
+    text1: {
         backgroundColor: 'lightgreen',
         paddingHorizontal: 10,
         paddingVertical: 6,
@@ -106,7 +110,7 @@ const styles = StyleSheet.create({
         marginTop: 10,
         width: 250,
     },
-    text2:{
+    text2: {
         paddingVertical: 15,
         paddingHorizontal: 10,
         borderWidth: 1,
@@ -116,7 +120,7 @@ const styles = StyleSheet.create({
         marginVertical: 10,
         width: 250,
     },
-    datos:{
+    datos: {
         backgroundColor: '#ecebebff',
         paddingHorizontal: 10,
         paddingVertical: 6,
@@ -126,11 +130,11 @@ const styles = StyleSheet.create({
         borderColor: '#ecebebff',
         marginTop: 10,
     },
-    datos1:{
+    datos1: {
         fontWeight: 'bold',
         fontSize: 16,
     },
-    datos2:{
+    datos2: {
         fontSize: 14,
     },
 });

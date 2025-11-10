@@ -1,18 +1,16 @@
 import { View, Text, StyleSheet, Pressable} from "react-native";
 import { Component } from "react";
 import { db, auth } from "../firebase/config";
+import firebase from "firebase";
 
 class Posts extends Component {
     constructor(props) {
         super(props);
-        this.state = {
-            likes:[]
-        }
     }
 
     likear(postId){
         const user = auth.currentUser;
-        const yaLikeado = this.state.likes.includes(postId);
+        const yaLikeado = this.props.post.data.likes.includes(user.email);
         db.collection("posts").doc(postId)
         .update({
             likes: yaLikeado ? 

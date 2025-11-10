@@ -57,10 +57,7 @@ class Perfil extends Component {
     
                 posts.push({
                   id: doc.id,
-                  username: data.username,
-                  email: data.email,
-                  mensaje: data.mensaje,
-                  likes: data.likes
+                  data: doc.data(),
                 });
               });
     
@@ -89,8 +86,7 @@ class Perfil extends Component {
                 )}/>
                 <FlatList data={this.state.posts} 
                           keyExtractor={post => post.id.toString()} renderItem={({item}) => (
-                          <Posts post = {item}/>
-                                 
+                          <Posts post = {item} navigation={this.props.navigation}/>       
                 )}/>
                 <Pressable onPress={() => this.logout()}>
                     <Text style={styles.text1}>Logout</Text>

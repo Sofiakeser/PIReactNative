@@ -1,6 +1,6 @@
 import { View, Text, StyleSheet, Pressable, TextInput } from "react-native";
 import { Component } from "react";
-import { FlatList } from "react-native-web";
+import { FlatList } from "react-native";
 import {db, auth} from "../firebase/config";
 import firebase from "firebase";
 
@@ -29,11 +29,12 @@ class Comentarios extends Component {
             <View style={styles.container}>
                 <Text>{this.props.route.params.email}</Text>
                 <Text>{this.props.route.params.mensaje}</Text>
-                <Text>{this.props.route.params.likes.length}</Text>
+                <Text>Likes: {this.props.route.params.likes.length}</Text>
                 <TextInput keyboardType="default" placeholder="Comentario" onChangeText={text => this.setState({ comentario: text })} style={styles.text2} />
                 <Pressable onPress={() => this.onSubmit()}>
                     <Text style={styles.text1}>Enviar</Text>
                 </Pressable>
+                
                 <View style={styles.datos}>
                     <Text style={styles.datos1}>Comentarios:</Text>
                     <FlatList data={this.props.route.params.comentarios}
