@@ -2,6 +2,7 @@ import { Component } from "react";
 import { View, Text, StyleSheet, Pressable, FlatList} from "react-native";
 import firebase from "firebase";
 import { db,auth } from "../firebase/config";
+import Posts from "../components/Posts"
 
 class Home extends Component {
     constructor(props) {
@@ -10,7 +11,6 @@ class Home extends Component {
             posts: [],
             error: '',
             mensaje: '',
-            likes:[]
         };
     }
 
@@ -38,41 +38,15 @@ class Home extends Component {
                 })
             }
         }
-
-    likear(postId){
-        const user = auth.currentUser;
-        const yaLikeado = this.state.likes.includes(postId);
-        db.collection("posts").doc(postId)
-        .update({
-            likes: yaLikeado ? 
-            firebase.firestore.FieldValue.arrayRemove(user.email) : 
-            firebase.firestore.FieldValue.arrayUnion(user.email)
-        })
-        if(yaLikeado){
-            this.setState({
-                likes: this.state.likes.filter(id => id !== postId)
-            });   
-        } else {
-            const likeado = this.state.likes;
-            likeado.push(postId);
-            this.setState({ likes: likeado });
-        }
-    }
     
     render() {
         const user = auth.currentUser;
         return (
             <View style={styles.container}>
                 <FlatList data={this.state.posts} 
-                          keyExtractor={post => post.id.toString()} renderItem={({ item: post }) => (
-                            <View key={post.id} style={styles.datos}>
-                                <Text style={styles.datos1}>{post.data.email}</Text>
-                                <Text style={styles.datos2}>{post.data.mensaje}</Text>
-                                <Text> Likes: {post.data.likes.length} </Text>
-                                <Pressable onPress={() => this.likear(post.id)}>
-                                    <Text>{post.data.likes.includes(user.email) ? "No me gusta" : "Me gusta"}</Text>
-                                </Pressable>
-                            </View>       
+                          keyExtractor={post => post.id.toString()} renderItem={({item}) => (
+                          <Posts post = {item} navigation = {this.props.navigation}/>
+                                 
                 )}/>
             </View>
         );

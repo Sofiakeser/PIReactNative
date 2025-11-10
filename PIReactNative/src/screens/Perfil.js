@@ -1,6 +1,7 @@
 import { View, Text, StyleSheet, Pressable, FlatList} from "react-native";
 import { Component } from "react";
 import { db,auth } from "../firebase/config";
+import Posts from "../components/Posts"
 
 class Perfil extends Component {
     constructor(props) {
@@ -87,15 +88,9 @@ class Perfil extends Component {
                             </View>       
                 )}/>
                 <FlatList data={this.state.posts} 
-                        keyExtractor={post => post.id.toString()} renderItem={({ item: post }) => (
-                        <View key={post.id} style={styles.datos}>
-                            <Text style={styles.datos1}>{post.email}</Text>
-                            <Text style={styles.datos2}>{post.mensaje}</Text>
-                            <Text> Likes: {post.likes.length} </Text>
-                            <Pressable onPress={() => this.likear(post.id)}>
-                                <Text>{post.likes.includes(user.email) ? "No me gusta" : "Me gusta"}</Text>
-                            </Pressable>
-                        </View>       
+                          keyExtractor={post => post.id.toString()} renderItem={({item}) => (
+                          <Posts post = {item}/>
+                                 
                 )}/>
                 <Pressable onPress={() => this.logout()}>
                     <Text style={styles.text1}>Logout</Text>

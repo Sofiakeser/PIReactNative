@@ -44,6 +44,7 @@ class NuevoPost extends Component {
                     mensaje: this.state.mensaje,
                     email: auth.currentUser.email,
                     likes: [],
+                    comentarios: [],
                     createdAt: Date.now(),
                 })
                 .then( res => this.setState({
