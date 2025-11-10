@@ -120,20 +120,6 @@ const styles = StyleSheet.create({
         marginVertical: 10,
         width: 250,
     },
-    datos: {
-        backgroundColor: '#ecebebff',
-        paddingHorizontal: 10,
-        paddingVertical: 6,
-        borderRadius: 4,
-        borderWidth: 1,
-        borderStyle: 'solid',
-        borderColor: '#ecebebff',
-        marginTop: 10,
-    },
-    datos1: {
-        fontWeight: 'bold',
-        fontSize: 16,
-    },
     datos2: {
         fontSize: 14,
     },

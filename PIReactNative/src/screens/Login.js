@@ -41,7 +41,7 @@ class Login extends Component {
 
     componentDidMount() {
         auth.onAuthStateChanged(user => {
-            if (user.email == auth.currentUser.email){
+            if (user){
                 this.props.navigation.navigate("HomeMenu")
             }
         })}  

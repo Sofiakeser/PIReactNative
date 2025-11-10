@@ -1,7 +1,7 @@
 import { View, Text, StyleSheet, Pressable, TextInput } from "react-native";
 import { Component } from "react";
 import { FlatList } from "react-native";
-import {db, auth} from "../firebase/config";
+import { db, auth } from "../firebase/config";
 import firebase from "firebase";
 
 
@@ -9,17 +9,45 @@ class Comentarios extends Component {
     constructor(props) {
         super(props);
         this.state = {
-            comentario: ""
+            comentario: "",
+            comentarios: []
         };
+    }
+
+    componentDidMount() {
+        const postId = this.props.route.params.id;
+
+        db.collection("posts")
+            .doc(postId)
+            .onSnapshot((doc) => {
+                const data = doc.data();
+                let comentarios = [];
+
+                if (data && data.comentarios) {
+                    comentarios = data.comentarios;
+                }
+
+                this.setState({
+                    comentarios: comentarios
+                });
+            });
     }
 
     onSubmit() {
         const user = auth.currentUser;
-        db.collection("posts").doc(this.props.route.params.id)
+
+        db.collection("posts")
+            .doc(this.props.route.params.id)
             .update({
-                comentarios:
-                    firebase.firestore.FieldValue.arrayUnion({ email: user.email, comentario: this.state.comentario })
-            })
+                comentarios: firebase.firestore.FieldValue.arrayUnion({
+                    email: user.email,
+                    comentario: this.state.comentario
+                })
+            });
+
+        this.setState({
+            comentario: ""
+        });
 
         console.log(this.state);
     }
@@ -30,19 +58,23 @@ class Comentarios extends Component {
                 <Text>{this.props.route.params.email}</Text>
                 <Text>{this.props.route.params.mensaje}</Text>
                 <Text>Likes: {this.props.route.params.likes.length}</Text>
-                <TextInput keyboardType="default" placeholder="Comentario" onChangeText={text => this.setState({ comentario: text })} style={styles.text2} />
+                <TextInput keyboardType="default" placeholder="Comentario" onChangeText={text => this.setState({ comentario: text })} value={this.state.comentario} style={styles.text2} />
                 <Pressable onPress={() => this.onSubmit()}>
                     <Text style={styles.text1}>Enviar</Text>
                 </Pressable>
-                
+
                 <View style={styles.datos}>
                     <Text style={styles.datos1}>Comentarios:</Text>
-                    <FlatList data={this.props.route.params.comentarios}
-                        keyExtractor={item => item.id.toString()} renderItem={({ item }) => (
-                        <View> 
-                            <Text>{item.email}</Text>
-                            <Text>{item.comentario}</Text>
-                        </View>)}/>
+                    <FlatList
+                        data={this.state.comentarios}
+                        keyExtractor={(item, index) => index.toString()}
+                        renderItem={({ item }) => (
+                            <View>
+                                <Text>{item.email}</Text>
+                                <Text>{item.comentario}</Text>
+                            </View>
+                        )}
+                    />
                 </View>
             </View>
         );
@@ -95,9 +127,6 @@ const styles = StyleSheet.create({
     datos1: {
         fontWeight: 'bold',
         fontSize: 16,
-    },
-    datos2: {
-        fontSize: 14,
     },
 });
 

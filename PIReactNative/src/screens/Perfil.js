@@ -84,7 +84,8 @@ class Perfil extends Component {
                                 <Text style={styles.datos2}>{user.email}</Text>
                             </View>       
                 )}/>
-                <FlatList data={this.state.posts} 
+                <Text style={styles.datos1} >Publicaciones:</Text>
+                <FlatList data={this.state.posts} style={styles.contenedor} 
                           keyExtractor={post => post.id.toString()} renderItem={({item}) => (
                           <Posts post = {item} navigation={this.props.navigation}/>       
                 )}/>
@@ -102,13 +103,7 @@ const styles = StyleSheet.create({
         paddingHorizontal: 10,
         marginTop: 20,
         alignItems: 'center',
-    },
-    text:{
-        fontWeight: 'bold',
-        fontSize: 20,
-        textAlign: 'left',
-        marginBottom: 10,
-    },    
+    },  
     text1:{
         backgroundColor: 'lightgreen', 
         paddingHorizontal: 10,      
@@ -121,16 +116,7 @@ const styles = StyleSheet.create({
         textAlign: 'center',     
         marginTop: 10,
         width: 250,
-    },
-    text2:{
-        paddingVertical: 15,      
-        paddingHorizontal: 10,    
-        borderWidth: 1,           
-        borderColor: '#ccc',      
-        borderStyle: 'solid',     
-        borderRadius: 6,          
-        marginVertical: 10,
-        width: 250,
+        marginBottom: 100,
     },
     datos:{
         backgroundColor: '#ecebebff', 
@@ -140,7 +126,8 @@ const styles = StyleSheet.create({
         borderWidth: 1,             
         borderStyle: 'solid',       
         borderColor: '#ecebebff',         
-        marginTop: 10,
+        marginTop: 5,
+        marginBottom: 5,
     },
     datos1:{
         fontWeight: 'bold',
@@ -149,6 +136,9 @@ const styles = StyleSheet.create({
     datos2:{
         fontSize: 14,
     },
+    contenedor:{
+      marginBottom: 200,
+    }
 });
 
 export default Perfil;
