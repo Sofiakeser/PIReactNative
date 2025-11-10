@@ -1,4 +1,4 @@
-import { View, Text, StyleSheet, Pressable, TextInput} from "react-native";
+import { View, Text, StyleSheet, Pressable, FlatList} from "react-native";
 import { Component } from "react";
 import { db,auth } from "../firebase/config";
 
@@ -7,10 +7,12 @@ class Perfil extends Component {
         super(props);
         this.state = {
             usuarios: [],
+            posts: []
         };
     }
     componentDidMount(){
         this.extraerDatos();
+        this.mostrarPosts();
     }
 
     extraerDatos() {
@@ -40,26 +42,29 @@ class Perfil extends Component {
       }
 
     mostrarPosts(){
-        const post = auth.currentUser;
+        const user = auth.currentUser;
     
         if (user) {
-          db.collection("users")
-            .where("email", "==", user.email)  
+          db.collection("posts")
+            .where("email", "==", user.email)
+            .orderBy("createdAt", "desc") 
             .onSnapshot((docs) => {
-              let usuarios = [];
+              let posts = [];
     
               docs.forEach((doc) => {
                 let data = doc.data();
     
-                usuarios.push({
+                posts.push({
                   id: doc.id,
                   username: data.username,
                   email: data.email,
+                  mensaje: data.mensaje,
+                  likes: data.likes
                 });
               });
     
               this.setState({
-                usuarios: usuarios,
+                posts: posts,
               });
             });
         }
@@ -71,13 +76,27 @@ class Perfil extends Component {
     }
     
     render() {
+        const user = auth.currentUser;
         return (
             <View style={styles.container}>
-                 {this.state.usuarios.map((user) => (
-                    <View key={user.id} style={styles.datos}>
-                        <Text style={styles.datos1}>{user.username}</Text>
-                        <Text style={styles.datos2}>{user.email}</Text>
-                    </View>))}
+                <FlatList data={this.state.usuarios} 
+                          keyExtractor={user => user.id.toString()} renderItem={({ item: user }) => (
+                            <View key={user.id} style={styles.datos}>
+                                <Text style={styles.datos1}>{user.username}</Text>
+                                <Text style={styles.datos2}>{user.email}</Text>
+                            </View>       
+                )}/>
+                <FlatList data={this.state.posts} 
+                        keyExtractor={post => post.id.toString()} renderItem={({ item: post }) => (
+                        <View key={post.id} style={styles.datos}>
+                            <Text style={styles.datos1}>{post.email}</Text>
+                            <Text style={styles.datos2}>{post.mensaje}</Text>
+                            <Text> Likes: {post.likes.length} </Text>
+                            <Pressable onPress={() => this.likear(post.id)}>
+                                <Text>{post.likes.includes(user.email) ? "No me gusta" : "Me gusta"}</Text>
+                            </Pressable>
+                        </View>       
+                )}/>
                 <Pressable onPress={() => this.logout()}>
                     <Text style={styles.text1}>Logout</Text>
                 </Pressable>
