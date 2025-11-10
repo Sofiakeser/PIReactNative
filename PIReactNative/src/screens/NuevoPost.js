@@ -12,24 +12,20 @@ class NuevoPost extends Component {
         }
     }
 
+    componentDidMount() {
+        this.obtenerUsername();
+    }
+
     obtenerUsername() {
         const user = auth.currentUser;
         if (user) {
-            db.collection("users").where("email", "==", user.email)
+            db.collection("users")
+                .where("email", "==", user.email)
                 .onSnapshot((docs) => {
-                    let usuarios = [];
 
                     docs.forEach((doc) => {
-                        let data = doc.data();
-
-                        usuarios.push({
-                            id: doc.id,
-                            username: data.username,
-                        });
-                    });
-
-                    this.setState({
-                        username: usuarios[0].username,
+                        const data = doc.data();
+                        this.setState({ username: data.username });
                     });
                 });
         }
@@ -44,6 +40,7 @@ class NuevoPost extends Component {
             db.collection("posts").add({
                 mensaje: this.state.mensaje,
                 email: auth.currentUser.email,
+                username: this.state.username,
                 likes: [],
                 comentarios: [],
                 createdAt: Date.now(),
@@ -55,7 +52,7 @@ class NuevoPost extends Component {
                     });
                     this.props.navigation.navigate('NavComments', { screen: 'Home' });
                 })
-                .catch (error => this.setState({ error: 'Error al subir el post' }) )
+                .catch(error => this.setState({ error: 'Error al subir el post' }))
         }
     }
 
@@ -98,13 +95,13 @@ const styles = StyleSheet.create({
         marginBottom: 10,
     },
     text1: {
-        backgroundColor: 'lightgreen',
+        backgroundColor: '#A8C6FF',
         paddingHorizontal: 10,
         paddingVertical: 6,
         borderRadius: 4,
         borderWidth: 1,
         borderStyle: 'solid',
-        borderColor: 'lightgreen',
+        borderColor: '#A8C6FF',
         alignItems: 'center',
         textAlign: 'center',
         marginTop: 10,

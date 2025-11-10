@@ -84,7 +84,12 @@ class Perfil extends Component {
                                 <Text style={styles.datos2}>{user.email}</Text>
                             </View>       
                 )}/>
-                <Text style={styles.datos1} >Publicaciones:</Text>
+                
+
+                {this.state.posts.length !== 0 ? (
+                    <Text style={styles.datos1} >Publicaciones:</Text>
+                ) : <Text style={styles.datos1} >No hay publicaciones todavia</Text>}
+
                 <FlatList data={this.state.posts} style={styles.contenedor} 
                           keyExtractor={post => post.id.toString()} renderItem={({item}) => (
                           <Posts post = {item} navigation={this.props.navigation}/>       
@@ -105,13 +110,13 @@ const styles = StyleSheet.create({
         alignItems: 'center',
     },  
     text1:{
-        backgroundColor: 'lightgreen', 
+        backgroundColor: '#A8C6FF', 
         paddingHorizontal: 10,      
         paddingVertical: 6,         
         borderRadius: 4,            
         borderWidth: 1,             
         borderStyle: 'solid',       
-        borderColor: 'lightgreen',     
+        borderColor: '#A8C6FF',     
         alignItems: 'center',  
         textAlign: 'center',     
         marginTop: 10,

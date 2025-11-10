@@ -10,11 +10,13 @@ class Comentarios extends Component {
         super(props);
         this.state = {
             comentario: "",
-            comentarios: []
+            comentarios: [],
+            username: "",
         };
     }
 
     componentDidMount() {
+        this.obtenerUsername();
         const postId = this.props.route.params.id;
 
         db.collection("posts")
@@ -33,6 +35,22 @@ class Comentarios extends Component {
             });
     }
 
+    obtenerUsername() {
+        const user = auth.currentUser;
+        if (user) {
+            db.collection("users")
+                .where("email", "==", user.email)
+                .onSnapshot((docs) => {
+
+                    docs.forEach((doc) => {
+                        const data = doc.data();
+                        this.setState({ username: data.username });
+                    });
+                });
+        }
+    }
+
+
     onSubmit() {
         const user = auth.currentUser;
 
@@ -41,6 +59,7 @@ class Comentarios extends Component {
             .update({
                 comentarios: firebase.firestore.FieldValue.arrayUnion({
                     email: user.email,
+                    username: this.state.username,
                     comentario: this.state.comentario
                 })
             });
@@ -55,7 +74,7 @@ class Comentarios extends Component {
     render() {
         return (
             <View style={styles.container}>
-                <Text>{this.props.route.params.email}</Text>
+                <Text style={styles.datos1} >{this.props.route.params.username}</Text>
                 <Text>{this.props.route.params.mensaje}</Text>
                 <Text>Likes: {this.props.route.params.likes.length}</Text>
                 <TextInput keyboardType="default" placeholder="Comentario" onChangeText={text => this.setState({ comentario: text })} value={this.state.comentario} style={styles.text2} />
@@ -70,7 +89,7 @@ class Comentarios extends Component {
                         keyExtractor={(item, index) => index.toString()}
                         renderItem={({ item }) => (
                             <View>
-                                <Text>{item.email}</Text>
+                                <Text style={styles.datos1} >{item.username}</Text>
                                 <Text>{item.comentario}</Text>
                             </View>
                         )}
@@ -94,13 +113,13 @@ const styles = StyleSheet.create({
         marginBottom: 10,
     },
     text1: {
-        backgroundColor: 'lightgreen',
+        backgroundColor: '#A8C6FF',
         paddingHorizontal: 10,
         paddingVertical: 6,
         borderRadius: 4,
         borderWidth: 1,
         borderStyle: 'solid',
-        borderColor: 'lightgreen',
+        borderColor: '#A8C6FF',
         alignItems: 'center',
         textAlign: 'center',
         marginTop: 10,
